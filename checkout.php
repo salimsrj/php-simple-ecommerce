@@ -1,6 +1,6 @@
 <?php
 session_start();
-include_once('connection.php');
+include_once 'connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -45,7 +45,7 @@ include_once('connection.php');
 
   <div class="col-md-6">
 
-   
+
     <div class="form-group">
         <label for="name">Name</label>
         <input type="text" class="form-control" id="name" placeholder="Your name" name="name">
@@ -62,8 +62,8 @@ include_once('connection.php');
     <textarea class="form-control" id="address" rows="3" name="address"></textarea>
   </div>
 
-    
-  
+
+
   </div>
 
     <div class="col-md-6">
@@ -77,21 +77,21 @@ include_once('connection.php');
     </tr>
   </thead>
   <tbody>
-  <?php  
-  $i = 1;
-  $total = 0;
-  foreach ($_SESSION['cart'] as $row) { 
+  <?php
+$i = 1;
+$total = 0;
+foreach ($_SESSION['cart'] as $row) {
     $conn = $pdo->open();
 
     $stmt = $conn->prepare("SELECT *  FROM products WHERE products.id=:id");
-    $stmt->execute(['id'=>$row['productid']]);
+    $stmt->execute(['id' => $row['productid']]);
     $product = $stmt->fetch();
     $pdo->close();
 
-    $subtotal =$product['price'] *  $row['quantity'];
+    $subtotal = $product['price'] * $row['quantity'];
     $total += $subtotal;
-                
-      ?>
+
+    ?>
     <tr>
       <th scope="row"><?php echo $i; ?></th>
       <td><?php echo $product['title']; ?></td>
@@ -100,7 +100,7 @@ include_once('connection.php');
     </tr>
   <?php
 $i++;
-} ?>
+}?>
     <tr>
     <td colspan="3" style="text-align: right;">Total</td>
     <td><strong>$ <?php echo $total; ?></strong></td>
@@ -110,15 +110,15 @@ $i++;
     <td>
             <input type="hidden" name="price" value="<?php echo $total; ?>">
             <button type="submit" class="btn btn-primary" name="order">Pay Now</button>
-    
-        
+
+
     </td>
     </tr>
 
   </tbody>
 </table>
     </div>
-    
+
   </div>
   </form>
 </div>

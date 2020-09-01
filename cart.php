@@ -1,7 +1,7 @@
 <?php
-include_once('card-add.php');
+include_once 'card-add.php';
 
-include_once('connection.php');
+include_once 'connection.php';
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -39,18 +39,18 @@ include_once('connection.php');
         <h1>Cart List</h1>
     </div>
     <div class="col-md-12">
-        <span style="color: red;"><?php 
-        if(isset($_SESSION['message'])){
-        
-        echo '<div class="alert alert-danger" role="alert">
-        '.$_SESSION['message'].'
+        <span style="color: red;"><?php
+if (isset($_SESSION['message'])) {
+
+    echo '<div class="alert alert-danger" role="alert">
+        ' . $_SESSION['message'] . '
       </div>';
-      unset($_SESSION['message']);
-        } ?>
+    unset($_SESSION['message']);
+}?>
         </span>
         <br>
-        
-        
+
+
     </div>
   </div>
   <div class="row">
@@ -65,54 +65,54 @@ include_once('connection.php');
     </tr>
   </thead>
   <tbody>
-  <?php  
-  $i = 1;
-  $total = 0;
-  foreach ($_SESSION['cart'] as $row) { 
+  <?php
+$i = 1;
+$total = 0;
+foreach ($_SESSION['cart'] as $row) {
     $conn = $pdo->open();
 
     $stmt = $conn->prepare("SELECT *  FROM products WHERE products.id=:id");
-    $stmt->execute(['id'=>$row['productid']]);
+    $stmt->execute(['id' => $row['productid']]);
     $product = $stmt->fetch();
     $pdo->close();
 
-    $subtotal =$product['price'] *  $row['quantity'];
+    $subtotal = $product['price'] * $row['quantity'];
     $total += $subtotal;
-                
-      ?>
+
+    ?>
     <tr>
       <th scope="row"><?php echo $i; ?></th>
       <td><?php echo $product['title']; ?></td>
       <td>
-      <input type="number" class="form-control" id="qty_<?php echo $i; ?>" placeholder="Your name" name="name" value="<?php echo $row['quantity']; ?>">     
-      
+      <form action="update-cart.php" method="post" style='display:flex;'>
+      <button type="submit" class="btn btn-light" name="minus"><strong>-</strong></button>
+      <input type="hidden" name="update_id" value="<?php echo $product['id']; ?>">
+      <input style="width: 75px; text-align: center !important;" type="number" class="form-control" id="qty_<?php echo $i; ?>" name="name" value="<?php echo $row['quantity']; ?>">
+      <button type="submit" class="btn btn-light" name="plus"><strong>+</strong></button>
+      </form>
+
       </td>
       <td>$ <?php echo $subtotal; ?></td>
       <td>
     <form action="delete-cart.php" method="post">
       <input type="hidden" name="removal_id" value="<?php echo $product['id']; ?>">
-      <button type="submit" class="btn btn-danger" name="delete">X</button> 
+      <button type="submit" class="btn btn-danger" name="delete">X</button>
     </form>
     </td>
     </tr>
   <?php
 $i++;
-} ?>
+}?>
     <tr>
     <td colspan="3" style="text-align: right;">Total</td>
     <td><strong>$ <?php echo $total; ?></strong></td>
-   
+
     </tr>
     <tr>
     <td colspan="3"></td>
     <td colspan="2">
-    <form action="cart-update.php" method="post">
-        <button type="submit" class="btn btn-primary" name="Update">Update</button> 
-        </form>
-        <br>
-
         <form action="checkout.php" method="post">
-        <button type="submit" class="btn btn-primary" name="checkout">Checkout</button> 
+        <button type="submit" class="btn btn-primary" name="checkout">Checkout</button>
         </form>
     </td>
     </tr>

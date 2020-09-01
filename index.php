@@ -2,20 +2,19 @@
 <html lang="en">
 
 <?php
-include_once('connection.php');
+include_once 'connection.php';
 $conn = $pdo->open();
 
-	try{
-        $stmt = $conn->prepare("SELECT * FROM products");	
-        $stmt->execute();
-		    $products = $stmt->fetchAll();
-		
-	}
-	catch(PDOException $e){
-		echo "There is some problem in connection: " . $e->getMessage();
-	}
+try {
+    $stmt = $conn->prepare("SELECT * FROM products");
+    $stmt->execute();
+    $products = $stmt->fetchAll();
 
-	$pdo->close();
+} catch (PDOException $e) {
+    echo "There is some problem in connection: " . $e->getMessage();
+}
+
+$pdo->close();
 ?>
 <head>
   <title>Ecommerce</title>
@@ -47,9 +46,9 @@ $conn = $pdo->open();
 <div class="row">
 <div class="col-md-12">
   <?php
-  session_start();
-  
-  ?>
+session_start();
+
+?>
 </div>
 </div>
   <div class="row">
@@ -58,10 +57,10 @@ $conn = $pdo->open();
     </div>
   </div>
   <div class="row">
-  <?php foreach($products as $product){ ?>
+  <?php foreach ($products as $product) {?>
     <div class="col-md-4">
         <div class="product-box">
-            <h2><?php echo $product['title']; ?></h2> 
+            <h2><?php echo $product['title']; ?></h2>
             <div class="product_img">
                 <img src="https://via.placeholder.com/300x250?text=Product One" alt="">
             </div>
@@ -77,7 +76,7 @@ $conn = $pdo->open();
             </div>
         </div>
     </div>
-  <?php } ?>
+  <?php }?>
   </div>
 </div>
 
