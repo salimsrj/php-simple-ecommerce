@@ -1,7 +1,6 @@
 <?php
 include_once('card-add.php');
-?>
-<?php
+
 include_once('connection.php');
 ?>
 <!DOCTYPE html>
@@ -18,11 +17,40 @@ include_once('connection.php');
 
 
 <body>
+<nav class="navbar navbar-expand-lg navbar-light bg-light">
+<div class="container">
+  <a class="navbar-brand" href="#">Navbar</a>
+  <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNavAltMarkup" aria-controls="navbarNavAltMarkup" aria-expanded="false" aria-label="Toggle navigation">
+    <span class="navbar-toggler-icon"></span>
+  </button>
+  <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
+    <div class="navbar-nav">
+      <a class="nav-item nav-link active" href="index.php">Home</span></a>
+      <a class="nav-item nav-link" href="/cart.php">Cart</a>
+    </div>
+  </div>
+  </div>
+</nav>
+
 <div class="container">
 
   <div class="row">
     <div class="col-md-12">
         <h1>Cart List</h1>
+    </div>
+    <div class="col-md-12">
+        <span style="color: red;"><?php 
+        if(isset($_SESSION['message'])){
+        
+        echo '<div class="alert alert-danger" role="alert">
+        '.$_SESSION['message'].'
+      </div>';
+      unset($_SESSION['message']);
+        } ?>
+        </span>
+        <br>
+        
+        
     </div>
   </div>
   <div class="row">
@@ -55,8 +83,17 @@ include_once('connection.php');
     <tr>
       <th scope="row"><?php echo $i; ?></th>
       <td><?php echo $product['title']; ?></td>
-      <td><?php echo $row['quantity']; ?></td>
+      <td>
+      <input type="number" class="form-control" id="qty_<?php echo $i; ?>" placeholder="Your name" name="name" value="<?php echo $row['quantity']; ?>">     
+      
+      </td>
       <td>$ <?php echo $subtotal; ?></td>
+      <td>
+    <form action="delete-cart.php" method="post">
+      <input type="hidden" name="removal_id" value="<?php echo $product['id']; ?>">
+      <button type="submit" class="btn btn-danger" name="delete">X</button> 
+    </form>
+    </td>
     </tr>
   <?php
 $i++;
@@ -64,12 +101,18 @@ $i++;
     <tr>
     <td colspan="3" style="text-align: right;">Total</td>
     <td><strong>$ <?php echo $total; ?></strong></td>
+   
     </tr>
     <tr>
     <td colspan="3"></td>
-    <td>
+    <td colspan="2">
+    <form action="cart-update.php" method="post">
+        <button type="submit" class="btn btn-primary" name="Update">Update</button> 
+        </form>
+        <br>
+
         <form action="checkout.php" method="post">
-            <button type="submit" class="btn btn-primary" name="checkout">Checkout</button> 
+        <button type="submit" class="btn btn-primary" name="checkout">Checkout</button> 
         </form>
     </td>
     </tr>

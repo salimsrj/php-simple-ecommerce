@@ -25,7 +25,12 @@ if(in_array($id, $exist)){
     foreach ($_SESSION['cart'] as $key => $field) {
         if ($field['productid']  == $id) {
             $qty =  $field["quantity"];
-            $_SESSION['cart'][$key]['quantity'] = $qty + 1;
+            if($qty >= 2){
+                $_SESSION['message'] = 'You cant able to add more than 2 items';
+            }else{
+                $_SESSION['cart'][$key]['quantity'] = $qty + 1;
+            }
+            
         }
     }
 
