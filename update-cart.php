@@ -20,8 +20,12 @@ if(isset($_POST['minus'])){
     foreach ($_SESSION['cart'] as $key => $field) {
         if ($field['productid']  == $update_id) {
             $qty =  $field["quantity"];
-            
+            if($qty <= 1){
+                $_SESSION['message'] = 'Quantity should not be less than one';
+               
+            }else{
                 $_SESSION['cart'][$key]['quantity'] = $qty - 1;
+            }
          
             
         }
