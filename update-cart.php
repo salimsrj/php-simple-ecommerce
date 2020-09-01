@@ -6,7 +6,7 @@ if(isset($_POST['plus'])){
         if ($field['productid']  == $update_id) {
             $qty =  $field["quantity"];
             if($qty >= 2){
-                $_SESSION['message'] = 'You cant able to add more than 2 items';
+                $_SESSION['message'] = 'You can be able to add up to 2 items of each product';
             }else{
                 $_SESSION['cart'][$key]['quantity'] = $qty + 1;
             }
