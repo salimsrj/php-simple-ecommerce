@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: localhost:3306
--- Generation Time: Sep 01, 2020 at 10:57 AM
+-- Generation Time: Sep 03, 2020 at 10:06 AM
 -- Server version: 5.7.24
 -- PHP Version: 7.2.19
 
@@ -35,6 +35,7 @@ CREATE TABLE `orders` (
   `address` text,
   `price` int(11) DEFAULT NULL,
   `pay_id` varchar(255) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
@@ -42,8 +43,30 @@ CREATE TABLE `orders` (
 -- Dumping data for table `orders`
 --
 
-INSERT INTO `orders` (`id`, `invoice`, `name`, `email`, `address`, `price`, `pay_id`, `date`) VALUES
-(22, 'INV-1598957815', 'Mahmudul Hasan', 'salimsrj@gmail.com', '9/1 Eskaton Road Gaus Nagar, Dhaka-1000', 3000, NULL, '2020-09-01 10:56:55');
+INSERT INTO `orders` (`id`, `invoice`, `name`, `email`, `address`, `price`, `pay_id`, `status`, `date`) VALUES
+(80, 'INV-1599127187', 'Mahmudul Hasan Salim', 'salimsrj@gmail.com', '9/1 Eskaton Road Gaus Nagar, Dhaka-1000.', 45, '4398512a-9cff-4fba-aadd-b242bba5a9db', 'approved', '2020-09-03 09:59:47');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `order_items`
+--
+
+CREATE TABLE `order_items` (
+  `id` int(11) NOT NULL,
+  `order_id` int(11) NOT NULL,
+  `product_id` int(11) NOT NULL,
+  `qty` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+--
+-- Dumping data for table `order_items`
+--
+
+INSERT INTO `order_items` (`id`, `order_id`, `product_id`, `qty`) VALUES
+(3, 80, 3, 1),
+(4, 80, 1, 2),
+(5, 80, 2, 2);
 
 -- --------------------------------------------------------
 
@@ -63,9 +86,9 @@ CREATE TABLE `products` (
 --
 
 INSERT INTO `products` (`id`, `title`, `description`, `price`) VALUES
-(1, 'Product One', 'Lorem ipsum dolor sit amet, sit cu primis prompta eruditi, vocent moderatius philosophia ad pro.', 500),
-(2, 'Product Two', 'Lorem ipsum dolor sit amet, sit cu primis prompta eruditi, vocent moderatius philosophia ad pro.', 300),
-(3, 'Product Three', 'Lorem ipsum dolor sit amet, sit cu primis prompta eruditi, vocent moderatius philosophia ad pro.', 700);
+(1, 'Product One', 'Lorem ipsum dolor sit amet, sit cu primis prompta eruditi, vocent moderatius philosophia ad pro.', 5),
+(2, 'Product Two', 'Lorem ipsum dolor sit amet, sit cu primis prompta eruditi, vocent moderatius philosophia ad pro.', 10),
+(3, 'Product Three', 'Lorem ipsum dolor sit amet, sit cu primis prompta eruditi, vocent moderatius philosophia ad pro.', 15);
 
 --
 -- Indexes for dumped tables
@@ -75,6 +98,12 @@ INSERT INTO `products` (`id`, `title`, `description`, `price`) VALUES
 -- Indexes for table `orders`
 --
 ALTER TABLE `orders`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `order_items`
+--
+ALTER TABLE `order_items`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -91,7 +120,13 @@ ALTER TABLE `products`
 -- AUTO_INCREMENT for table `orders`
 --
 ALTER TABLE `orders`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=23;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=81;
+
+--
+-- AUTO_INCREMENT for table `order_items`
+--
+ALTER TABLE `order_items`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
 
 --
 -- AUTO_INCREMENT for table `products`
