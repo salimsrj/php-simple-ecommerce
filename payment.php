@@ -1,5 +1,5 @@
 <?php
-
+session_start();
 include_once 'connection.php';
 require_once 'vendor/autoload.php';
 
@@ -34,30 +34,6 @@ if (isset($_POST['payment']) && isset($_POST['card'])) {
 
     $pdo->close();
 
-//     $method = new Payment\Create([
-//         'amount' => (float) sprintf('%.2f', $price),
-//         'currency' => 'EUR',
-//         'settle' => false,
-//         'description' => 'Order form Simple Ecommerce for cardinity by '.$name,
-//         'order_id' => $invoice,
-//         'country' => $country,
-//         'payment_method' => Cardinity\Method\Payment\Create::CARD,
-//         'payment_instrument' => [
-//             'pan' => $_POST['card']['pan'],
-//             'exp_year' => (int) $_POST['card']['exp_year'],
-//             'exp_month' => (int) $_POST['card']['exp_month'],
-//             'cvc' => $_POST['card']['cvc'],
-//             'holder' => $_POST['card']['holder'],
-//         ],
-//     ]);
-
-
-
-// $payment = $client->call($method);
-// $paymentId = $payment->getId();
-// // serializes object into string for storing in database
-// echo $serialized = serialize($payment);
-
 
 
 
@@ -79,9 +55,80 @@ $method = new Payment\Create([
 ]);
 /** @type Cardinity\Method\Payment\Payment */
 $payment = $client->call($method);
-$paymentId = $payment->getId();
+
 // serializes object into string for storing in database
-echo $serialized = serialize($payment);
+$serialized = serialize($payment);
+
+
+
+
+
+/** 
+* In case payment could not be processed exception will be thrown. 
+* In this example only Declined and ValidationFailed exceptions are handled. However there is more of them.
+* See Error Codes section for detailed list.
+*/
+try {
+    /** @type Cardinity\Method\Payment\Payment */
+    $payment = $client->call($method);
+    $status = $payment->getStatus();
+
+        if($status == 'approved') {
+        // Payment is approved
+        $paymentId = $payment->getId();
+
+        $conn = $pdo->open();
+        try {
+            $stmt = $conn->prepare("UPDATE orders SET pay_id=:pay_id, status=:status WHERE id=:id");
+            $stmt->execute([
+                'id' => $orderID, 
+                'pay_id' => $paymentId,
+                'status' => $status 
+                ]); ;
+            
+
+
+        } catch (PDOException $e) {
+            echo "There is some problem in connection: " . $e->getMessage();
+        }
+        $pdo->close();
+
+        unset($_SESSION['cart']);
+    
+
+
+        header('location: order-success.php');
+
+
+    }
+
+    if($status == 'pending') {
+      // Retrieve information for 3D-Secure authorization
+      $url = $payment->getAuthorizationInformation()->getUrl();
+      $data = $payment->getAuthorizationInformation()->getData();
+
+      header('location: order-pending.php');
+    }
+
+} catch (Exception\Declined $exception) {
+    /** @type Cardinity\Method\Payment\Payment */
+    $payment = $exception->getResult();
+    $status = $payment->getStatus(); // value will be 'declined'
+    $errors = $exception->getErrors(); // list of errors occured
+
+    header('location: order-declined.php');
+    
+} catch (Exception\ValidationFailed $exception) {
+    /** @type Cardinity\Method\Payment\Payment */
+    $payment = $exception->getResult();
+    $status = $payment->getStatus(); // value will be 'declined'
+    $errors = $exception->getErrors(); // list of errors occured
+
+    header('location: order-declined.php');
+
+    header('location: order.php');
+}
+
 
 
 

@@ -17,6 +17,17 @@ if (isset($_POST['order'])) {
     //$conn->commit();
     $orderID = $conn->lastInsertId();
 
+    session_start();
+
+    foreach ($_SESSION['cart'] as $key => $field) {       
+
+        $stmt = $conn->prepare("INSERT INTO  order_items (order_id, product_id, qty) VALUES (:order_id, :product_id, :qty)");
+        $stmt->execute(['order_id' => $orderID, 'product_id' => $field['productid'] , 'qty' =>  $field['quantity']]);
+    }
+
+    
+
+
     $pdo->close();
 }
 
@@ -28,10 +39,8 @@ if (isset($_POST['order'])) {
   <title>Ecommerce</title>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.16.0/umd/popper.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+  <link rel="stylesheet" href="dist/assets/css/bootstrap/bootstrap.css">
+  <link rel="stylesheet" href="dist/assets/css/style.css"> 
 </head>
 
 
@@ -70,7 +79,7 @@ if (isset($_POST['order'])) {
                 <div class="form-group row">
                     <label class="col-md-4 col-form-label">Card number</label>
                     <div class="col-md-8">
-                        <input name="card[pan]" required class="form-control" placeholder="Enter credit card number">
+                        <input type="number" name="card[pan]" required class="form-control" placeholder="Enter credit card number">
                     </div>
                 </div>
                 <div class="form-group row">
@@ -95,7 +104,7 @@ if (isset($_POST['order'])) {
                 <div class="form-group row">
                     <label class="col-md-4 col-form-label">Security code</label>
                     <div class="col-md-3">
-                        <input name="card[cvc]" required class="form-control" placeholder="CVV" maxlength="4">
+                        <input type="number" name="card[cvc]" required class="form-control" placeholder="CVV" maxlength="4">
                     </div>
                     <div class="col-md-4"><span class="cvv"><img src="img/cvv.png" alt="Secured"> What is CVV?</span></div>
                 </div>
