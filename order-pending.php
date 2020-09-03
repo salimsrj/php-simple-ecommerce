@@ -6,10 +6,19 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <link rel="stylesheet" href="dist/assets/css/bootstrap/bootstrap.css">
   <link rel="stylesheet" href="dist/assets/css/style.css"> 
+
+  <script type="text/javascript">
+          function OnLoadEvent()
+          {
+            // Make the form post as soon as it has been loaded.
+            document.ThreeDForm.submit();
+          }
+      </script>
+
 </head>
 
 
-<body>
+<body onload="OnLoadEvent();">
 
 <nav class="navbar navbar-expand-lg navbar-light bg-light">
 <div class="container">
@@ -34,7 +43,13 @@
   </div>
 </div>
 
-
+<?php session_start(); ?>
+<form name="ThreeDForm" method="POST" action="<?php echo $_SESSION['cardinity']['ThreeDForm']; ?>">
+    <!-- <button class="btn btn-success">Click Here</button> -->
+    <input type="hidden" name="PaReq" value="<?php echo $_SESSION['cardinity']['PaReq']; ?>"/>
+    <input type="hidden" name="TermUrl" value="/callback.php"/>
+    <input type="hidden" name="MD" value="<?php echo $_SESSION['cardinity']['MD']; ?>"/>
+</form>
 
 
 

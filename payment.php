@@ -54,10 +54,10 @@ $method = new Payment\Create([
     ],
 ]);
 /** @type Cardinity\Method\Payment\Payment */
-$payment = $client->call($method);
+//$payment = $client->call($method);
 
 // serializes object into string for storing in database
-$serialized = serialize($payment);
+//$serialized = serialize($payment);
 
 
 
@@ -104,8 +104,20 @@ try {
 
     if($status == 'pending') {
       // Retrieve information for 3D-Secure authorization
-      $url = $payment->getAuthorizationInformation()->getUrl();
-      $data = $payment->getAuthorizationInformation()->getData();
+      //$url = $payment->getAuthorizationInformation()->getUrl();
+      //$data = $payment->getAuthorizationInformation()->getData();
+
+
+        $auth = $payment->getAuthorizationInformation();
+        $pending = [
+            'ThreeDForm' => $auth->getUrl(),
+            'PaReq' => $auth->getData(),
+            'MD' => $payment->getOrderId(),
+            'PaymentId' => $payment->getId(),
+            'orderID' => $orderID
+        ];
+        $_SESSION['cardinity'] = $pending;
+
 
       header('location: order-pending.php');
     }
@@ -126,7 +138,6 @@ try {
 
     header('location: order-declined.php');
 
-    header('location: order.php');
 }
 
 
